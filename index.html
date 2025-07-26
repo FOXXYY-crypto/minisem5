@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Billing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 380px; /* Approximate width based on the image */
+            overflow: hidden;
+        }
+        .header {
+            background-color: #4b0082; /* Dark purple */
+            color: #ffffff;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header .back-arrow {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 15px;
+        }
+        .header .title {
+            font-size: 18px;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+        .header .profile-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .content {
+            padding: 20px;
+        }
+        .product-item, .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .product-item:last-of-type, .total-row:last-of-type {
+            border-bottom: none;
+        }
+        .product-item .name, .total-row .label {
+            font-size: 16px;
+            color: #333;
+        }
+        .product-item .price, .total-row .value {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+        }
+        .total-row.grand-total {
+            font-weight: 700;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        .payment-section {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .payment-section h3 {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .payment-option {
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        .payment-option.selected {
+            border-color: #4b0082;
+            box-shadow: 0 0 0 2px rgba(75, 0, 130, 0.2);
+        }
+        .payment-option .icon {
+            width: 40px;
+            height: 40px;
+            background-color: #eee; /* Placeholder for QR/UPI icon */
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            margin-right: 15px;
+            color: #555;
+        }
+        .payment-option .details {
+            flex-grow: 1;
+        }
+        .payment-option .details .title {
+            font-weight: 500;
+            font-size: 15px;
+            color: #333;
+        }
+        .payment-option .details .description {
+            font-size: 13px;
+            color: #777;
+        }
+        .vpa-input-group {
+            margin-top: 10px;
+            display: none; /* Hidden by default */
+        }
+        .vpa-input-group label {
+            display: block;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .vpa-input-group input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 15px;
+        }
+
+        .feedback-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            border: 1px solid #eee;
+        }
+        .feedback-section .prompt {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .feedback-section .prompt .icon {
+            font-size: 20px;
+            margin-right: 10px;
+            color: #555;
+        }
+        .feedback-section .prompt .text {
+            font-size: 15px;
+            color: #333;
+            font-weight: 500;
+        }
+        .feedback-section .message {
+            font-size: 13px;
+            color: #777;
+            padding-left: 30px; /* Align with text */
+        }
+
+        .confirm-button-wrapper {
+            padding: 20px;
+            background-color: #ffffff;
+            border-top: 1px solid #eee;
+        }
+        .confirm-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #28a745; /* Green */
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 17px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .confirm-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="back-arrow">&#8592;</span> <div class="title">Final Billing</div>
+            <span class="profile-icon">&#128100;</span> </div>
+        <div class="content">
+            <div id="product-list">
+                <div class="product-item">
+                    <span class="name">Product</span>
+                    <span class="price">$7.23</span>
+                </div>
+                <div class="product-item">
+                    <span class="name">Total Samount</span>
+                    <span class="price">$4.10</span>
+                </div>
+                <div class="product-item">
+                    <span class="name">Qustine</span>
+                    <span class="price">$5.10</span>
+                </div>
+                <div class="product-item">
+                    <span class="name">Spemirty</span>
+                    <span class="price">$7.10</span>
+                </div>
+                <div class="product-item">
+                    <span class="name">Card Neide</span>
+                    <span class="price">$6.00</span>
+                </div>
+            </div>
+
+            <div class="total-row grand-total">
+                <span class="label">Grand Total</span>
+                <span class="value" id="grand-total-amount">$29.53</span> </div>
+
+            <div class="payment-section">
+                <h3>Select Payment Method</h3>
+                <div class="payment-option selected" id="online-payment-option">
+                    <div class="icon">QR / VPA</div>
+                    <div class="details">
+                        <div class="title">Online Payment (QR / UPI VPA)</div>
+                        <div class="description">Scan QR or enter VPA ID</div>
+                    </div>
+                </div>
+                <div class="vpa-input-group" id="vpa-input-group">
+                    <label for="vpa-id">Enter UPI VPA ID:</label>
+                    <input type="text" id="vpa-id" placeholder="yourname@bankname">
+                </div>
+            </div>
+
+            <div class="feedback-section">
+                <div class="prompt">
+                    <span class="icon">&#128172;</span> <span class="text">Comght Feedback</span>
+                </div>
+                <div class="message">Share share share snought your cart</div>
+            </div>
+        </div>
+        <div class="confirm-button-wrapper">
+            <button class="confirm-button" id="confirm-pay-button">Confirm & Pay</button>
+        </div>
+    </div>
+
+    <script type="module">
+        //FIREBASE PART Import the functions you need from the SDKs you need
+        // import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        // import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+
+        // Your web app's Firebase configuration
+        // const firebaseConfig = {
+        //   apiKey: "YOUR_API_KEY",
+        //   authDomain: "YOUR_AUTH_DOMAIN",
+        //   projectId: "YOUR_PROJECT_ID",
+        //   storageBucket: "YOUR_STORAGE_BUCKET",
+        //   messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        //   appId: "YOUR_APP_ID"
+        // };
+
+        // // Initialize Firebase
+        // const app = initializeApp(firebaseConfig);
+        // const database = getDatabase(app);
+
+        const productListDiv = document.getElementById('product-list');
+        const grandTotalAmountSpan = document.getElementById('grand-total-amount');
+        const onlinePaymentOption = document.getElementById('online-payment-option');
+        const vpaInputGroup = document.getElementById('vpa-input-group');
+        const confirmPayButton = document.getElementById('confirm-pay-button');
+
+        let cartItems = []; // This array will hold product data fetched from Firebase
+
+        // Function to render cart items and update total
+        function renderCart() {
+            productListDiv.innerHTML = ''; // Clear existing items
+            let total = 0;
+
+            cartItems.forEach(item => {
+                const productItemDiv = document.createElement('div');
+                productItemDiv.classList.add('product-item');
+                productItemDiv.innerHTML = `
+                    <span class="name">${item.name}</span>
+                    <span class="price">$${item.price.toFixed(2)}</span>
+                `;
+                productListDiv.appendChild(productItemDiv);
+                total += item.price;
+            });
+
+            grandTotalAmountSpan.textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Dummy data for demonstration (replace with Firebase listener)
+        // In a real application, you would listen for RFID scans and update `cartItems`
+        // For example, if your RFID scanner sends data to a Firebase Realtime Database path:
+        /*
+        const productsRef = ref(database, 'scannedProducts');
+        onValue(productsRef, (snapshot) => {
+            cartItems = [];
+            snapshot.forEach((childSnapshot) => {
+                const product = childSnapshot.val();
+                cartItems.push(product);
+            });
+            renderCart();
+        });
+        */
+
+        // Initial render with dummy data (to make it look like the image)
+        cartItems = [
+            { name: "Ground Nut Oil", price: 7.23 },
+            { name: "Totala 12 Paste", price: 3.10 },
+            { name: "Soap", price: 5.10 },
+            { name: "Bleach Powder", price: 7.10 },
+            { name: "Salt", price: 6.00 }
+        ];
+        renderCart();
+
+        // Handle payment option selection (just one for now)
+        onlinePaymentOption.addEventListener('click', () => {
+            onlinePaymentOption.classList.add('selected');
+            vpaInputGroup.style.display = 'block'; // Show VPA input
+        });
+
+        // Confirm & Pay button functionality
+        confirmPayButton.addEventListener('click', () => {
+            const grandTotal = parseFloat(grandTotalAmountSpan.textContent.replace('$', ''));
+            const vpaId = document.getElementById('vpa-id').value;
+
+            if (grandTotal === 0 || cartItems.length === 0) {
+                alert("Cart is empty. Please add products to proceed.");
+                return;
+            }
+
+            if (onlinePaymentOption.classList.contains('selected')) {
+                if (vpaId.trim() === '') {
+                    alert("Please enter your UPI VPA ID for online payment.");
+                    return;
+                }
+                // Here you would initiate the payment request
+                // This is a placeholder for actual payment gateway integration
+                alert(`Initiating online payment for ₹{grandTotal.toFixed(2)} to VPA: ₹{vpaId}`);
+                console.log("Payment details:", { total: grandTotal, vpa: vpaId, cart: cartItems });
+
+                // In a real application, you would send this data to your backend
+                // or directly to a payment gateway SDK.
+                // You might use Firebase Cloud Functions to handle the payment logic securely.
+
+            } else {
+                alert("Please select a payment method.");
+            }
+        });
+
+        // Example: How you might simulate adding a product (e.g., from an RFID scan event)
+        // In a real scenario, your RFID reader would send data to Firebase,
+        // and the Firebase listener would update `cartItems`.
+        function addProductFromScan(productName, productPrice) {
+            cartItems.push({ name: productName, price: productPrice });
+            renderCart();
+            // In a real app, you'd probably push this to Firebase, and the onValue listener would pick it up.
+            // push(productsRef, { name: productName, price: productPrice });
+        }
+
+        // You could call this function from an external script or event that simulates an RFID scan
+        // For example:
+        // setTimeout(() => addProductFromScan("New Scanned Item", 12.50), 3000);
+
+    </script>
+</body>
+</html>
